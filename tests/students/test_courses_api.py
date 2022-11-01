@@ -157,22 +157,22 @@ def test_delete_course(client, course_factory):
 
 
 # тестирование кол-ва студентов на курсе без settings
-@pytest.mark.django_db
+# @pytest.mark.django_db
 # def test_student_number(client, student_factory):
-# Arrange
-# MAX_STUDENTS_PER_COURSE = True
-# students = student_factory(_quantity=20)
-# students_ids = []
-# for student in students:
-#     students_ids.append(student.id)
-# json_data = {'name': 'Курс 1', 'students': students_ids}
+#     # Arrange
+#     max_students_per_course = 20
+#     students = student_factory(_quantity=20)
+#     students_ids = []
+#     for student in students:
+#         students_ids.append(student.id)
+#     json_data = {'name': 'Курс 1', 'students': students_ids}
 #
-# # Act
-# post_response = client.post('/courses/', data=json_data)
+#     # Act
+#     post_response = client.post('/courses/', data=json_data)
 #
-# # Assert
-# assert post_response.status_code == 201
-# assert MAX_STUDENTS_PER_COURSE == Student.objects.count()
+#     # Assert
+#     assert post_response.status_code == 201
+#     assert max_students_per_course == Student.objects.count()
 
 # тестирование кол-ва студентов на курсе c settings
 @pytest.mark.django_db
