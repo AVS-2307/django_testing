@@ -12,9 +12,9 @@ def client():
     return APIClient()
 
 
-@pytest.fixture
-def course():
-    return Course.objects.create(name='course 1')
+# @pytest.fixture
+# def course():
+#     return Course.objects.create(name='course 1')
 
 
 # Заведите фикстуры для фабрики курсов
@@ -36,11 +36,10 @@ def student_factory():
 
 
 # фикстура для кол-ва студентов
-@pytest.fixture
-def settings() -> int:
-
-    max_students_per_course = MAX_STUDENTS_PER_COURSE
-    return max_students_per_course
+# @pytest.fixture
+# def settings() -> int:
+#     max_students_per_course = MAX_STUDENTS_PER_COURSE
+#     return max_students_per_course
 
 
 # тест успешного получения первого курса  и его названия + тест API
@@ -50,14 +49,13 @@ def test_get_first_course(client, course_factory, student_factory):
     courses = course_factory(_quantity=10)
 
     # Act
-    response = client.get('/courses/', {'id': courses[0].id})
+    response = client.get(f'/courses/{courses[0].id}/')
     data = response.json()
 
     # Assert
     assert response.status_code == 200
-    assert data[0]['id'] == courses[0].id
-    assert data[0]['name'] == courses[0].name
-
+    assert data['id'] == courses[0].id
+    assert data['name'] == courses[0].name
 
 # тест успешного получения списка курсов  + названий курсов + тест API
 @pytest.mark.django_db
@@ -175,18 +173,23 @@ def test_delete_course(client, course_factory):
 #     assert max_students_per_course == Student.objects.count()
 
 # тестирование кол-ва студентов на курсе c settings
-@pytest.mark.django_db
-def test_student_number(client, student_factory, settings):
-    # Arrange
-    students = student_factory(_quantity=10)
-    students_ids = []
-    for student in students:
-        students_ids.append(student.id)
-    json_data = {'name': 'Курс 1', 'students': students_ids}
+# @pytest.mark.django_db
+# def test_student_number(client, student_factory, settings):
+#     # Arrange
+#     students = student_factory(_quantity=10)
+#     students_ids = []
+#     for student in students:
+#         students_ids.append(student.id)
+#     json_data = {'name': 'Курс 1', 'students': students_ids}
+#
+#     # Act
+#     post_response = client.post('/courses/', data=json_data)
+#
+#     # Assert
+#     assert post_response.status_code == 201
+#     assert settings == Student.objects.count()
 
-    # Act
-    post_response = client.post('/courses/', data=json_data)
 
-    # Assert
-    assert post_response.status_code == 201
-    assert settings == Student.objects.count()
+@pytest.mark.parametrize(["students_count", "valid"], [(10, True), (50, False)])
+def test_student_count(settings, students_count, valid):
+    assert (students_count <= settings.MAX_STUDENTS_PER_COURSE) is valid
